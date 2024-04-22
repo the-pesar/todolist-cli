@@ -17,30 +17,30 @@ type Todo struct {
 }
 
 func main() {
-	namePtr := flag.String("n", "", "Name of the item")
-	descPtr := flag.String("d", "", "Description of the item")
-
 	add := flag.NewFlagSet("add", flag.ExitOnError)
-
-	add.StringVar(namePtr, "n", "", "Name of the todo item (shorthand)")
-	add.StringVar(descPtr, "d", "", "Description of the todo item (shorthand)")
-
+	name := add.String("n", "", "Name of the todo item (shorthand)")
+	desc := add.String("d", "", "Description of the todo item (shorthand)")
 	flag.Parse()
-	add.Parse(flag.Args()[1:])
 
 	var command string = flag.Arg(0)
 
 	switch command {
+		
 	case "add":
+		add.Parse(flag.Args()[1:])
+		fmt.Println(*name, *desc)
 		todo := Todo{
 			Id:     1,
-			Name:   *namePtr,
-			Desc:   *descPtr,
+			Name:   *name,
+			Desc:   *desc,
 			Status: "uncomplete",
 		}
-		fmt.Println(todo)
 		json, _ := json.Marshal(todo)
-		os.WriteFile(path, json, os.ModePerm)
-	}
+		os.WriteFile(path, json, 0777)
+	case "get":
+		var todos []Todo
+		content, _ := os.ReadFile(path)
+		json.Unmarshal(content, &todos)
 
+	}
 }

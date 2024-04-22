@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 var path string = "./todos.json"
@@ -18,6 +19,54 @@ type Todo struct {
 }
 
 var todos = []Todo{}
+
+/*
+	+++++++++++++++description
+  	+ name 6      +
+	+++++++++++++++
+*/
+
+func tablize(todos []Todo) {
+	var idLength, nameLength, descLength, statusLength = 2, 4, 11, 6
+
+	for _, v := range todos {
+		if len(v.Name) > int(nameLength) {
+			nameLength = len(v.Name)
+		}
+		if len(v.Desc) > descLength {
+			descLength = len(v.Desc)
+		}
+		if len(fmt.Sprint(v.Id)) > idLength {
+			idLength = len(fmt.Sprint(v.Id))
+		}
+	}
+
+	totalLength := idLength + nameLength + descLength + statusLength + 13
+
+	var header = fmt.Sprintf("\n%v\n+ \033[1mid\033[0m %v+ \033[1mname\033[0m %v+ \033[1mdescription\033[0m %v+ \033[1mstatus\033[0m +\n%v\n",
+		strings.Repeat("+", totalLength),
+		strings.Repeat(" ", idLength - 2),
+		strings.Repeat(" ", nameLength-4),
+		strings.Repeat(" ", descLength-11),
+		strings.Repeat("+", totalLength))
+
+	var body string
+
+	for _, v := range todos {
+		body = body + fmt.Sprintf("+ %v%v + %v%v + %v%v + %v%v +\n%v\n",
+			v.Id,
+			strings.Repeat(" ", idLength - len(fmt.Sprint(v.Id))),
+			v.Name,
+			strings.Repeat(" ", nameLength-len(v.Name)),
+			v.Desc,
+			strings.Repeat(" ", descLength-len(v.Desc)),
+			v.Status,
+			strings.Repeat(" ", statusLength - len(v.Status)),
+			strings.Repeat("+", totalLength))
+	}
+
+	fmt.Println(header + body)
+}
 
 func main() {
 	add := flag.NewFlagSet("add", flag.ExitOnError)
@@ -56,7 +105,7 @@ func main() {
 
 		idStr := list.Arg(0)
 		if idStr == "" {
-			fmt.Println(todos)
+			tablize(todos)
 			return
 		}
 

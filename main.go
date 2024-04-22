@@ -24,7 +24,7 @@ func main() {
 	name := add.String("n", "", "Name of the todo item (shorthand)")
 	desc := add.String("d", "", "Description of the todo item (shorthand)")
 
-	get := flag.NewFlagSet("get", flag.ExitOnError)
+	list := flag.NewFlagSet("list", flag.ExitOnError)
 	flag.Parse()
 
 	var command string = flag.Arg(0)
@@ -50,11 +50,11 @@ func main() {
 		json, _ := json.Marshal(todos)
 		os.WriteFile(path, json, 0777)
 
-	// get subcommand function
-	case "get":
-		get.Parse(flag.Args()[1:])
+	// list subcommand function
+	case "list":
+		list.Parse(flag.Args()[1:])
 
-		idStr := get.Arg(0)
+		idStr := list.Arg(0)
 		if idStr == "" {
 			fmt.Println(todos)
 			return

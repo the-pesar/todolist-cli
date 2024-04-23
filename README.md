@@ -4,4 +4,4 @@ Golang
 - [x] **add**: todolist add -n {name} -d {description}
 - [x] **read**: todolist list {id}
 - [ ] **update**: todolist update {id} -n {newname} -d {newdesc}
-- [ ] **remove**: todolist remove {id}
+- [x] **remove**: todolist remove {id}

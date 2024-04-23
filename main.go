@@ -127,7 +127,7 @@ func main() {
 
 		for _, v := range todos {
 			if v.Id == uint16(id) {
-				fmt.Println(v)
+				tablize([]Todo{v})
 			}
 		}
 	}

@@ -88,6 +88,7 @@ func main() {
 	desc := add.String("d", "", "Description of the todo item (shorthand)")
 
 	list := flag.NewFlagSet("list", flag.ExitOnError)
+	remove := flag.NewFlagSet("remove", flag.ExitOnError)
 	flag.Parse()
 
 	var command string = flag.Arg(0)
@@ -117,18 +118,40 @@ func main() {
 	case "list":
 		list.Parse(flag.Args()[1:])
 
-		idStr := list.Arg(0)
-		if idStr == "" {
+		id, _ := strconv.ParseUint(list.Arg(0), 10, 16)
+		if id == 0 {
 			tablize(todos)
 			return
 		}
-
-		id, _ := strconv.ParseUint(idStr, 10, 16)
 
 		for _, v := range todos {
 			if v.Id == uint16(id) {
 				tablize([]Todo{v})
 			}
 		}
+
+	// remove subcommand function
+	case "remove":
+		remove.Parse(flag.Args()[1:])
+
+		id, _ := strconv.ParseUint(remove.Arg(0), 10, 16)
+		if id == 0 {
+			fmt.Println("please give valid id to remove!")
+			return
+		}
+
+		var newTodos []Todo
+		for _, v := range todos {
+			if v.Id != uint16(id) {
+				newTodos = append(newTodos, v)
+			}
+		}
+
+		todos = newTodos
+
+		content, _ := json.Marshal(todos)
+
+		os.WriteFile(path, content, 0777)
+		fmt.Println("Todo was successfully deleted.")
 	}
 }

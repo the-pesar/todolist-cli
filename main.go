@@ -20,12 +20,6 @@ type Todo struct {
 
 var todos = []Todo{}
 
-/*
-	+++++++++++++++description
-  	+ name 6      +
-	+++++++++++++++
-*/
-
 func tablize(todos []Todo) {
 	var idLength, nameLength, descLength, statusLength = 2, 4, 11, 6
 
@@ -39,19 +33,22 @@ func tablize(todos []Todo) {
 		if len(fmt.Sprint(v.Id)) > idLength {
 			idLength = len(fmt.Sprint(v.Id))
 		}
+		if len(v.Status) > statusLength {
+			statusLength = len(v.Status)
+		}
 	}
 
 	totalLength := idLength + nameLength + descLength + statusLength + 13
 
-	var header = fmt.Sprintf("\n%v\n+ \033[1mid\033[0m %v+ \033[1mname\033[0m %v+ \033[1mdescription\033[0m %v+ \033[1mstatus\033[0m +\n%v\n",
+	var header = fmt.Sprintf("\n%v\n+ \033[1mid\033[0m %v+ \033[1mname\033[0m %v+ \033[1mdescription\033[0m %v+ \033[1mstatus\033[0m %v+\n%v\n",
 		strings.Repeat("+", totalLength),
 		strings.Repeat(" ", idLength - 2),
 		strings.Repeat(" ", nameLength-4),
 		strings.Repeat(" ", descLength-11),
+		strings.Repeat(" ", statusLength - 6),
 		strings.Repeat("+", totalLength))
 
 	var body string
-
 	for _, v := range todos {
 		body = body + fmt.Sprintf("+ %v%v + %v%v + %v%v + %v%v +\n%v\n",
 			v.Id,

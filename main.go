@@ -21,8 +21,10 @@ type Todo struct {
 var todos = []Todo{}
 
 func tablize(todos []Todo) {
+	// length of header columns name
 	var idLength, nameLength, descLength, statusLength = 2, 4, 11, 6
 
+	// increase size of column when content is long
 	for _, v := range todos {
 		if len(v.Name) > int(nameLength) {
 			nameLength = len(v.Name)
@@ -38,27 +40,42 @@ func tablize(todos []Todo) {
 		}
 	}
 
+	// divider row size
 	totalLength := idLength + nameLength + descLength + statusLength + 13
 
+	// creates header
 	var header = fmt.Sprintf("\n%v\n+ \033[1mid\033[0m %v+ \033[1mname\033[0m %v+ \033[1mdescription\033[0m %v+ \033[1mstatus\033[0m %v+\n%v\n",
 		strings.Repeat("+", totalLength),
-		strings.Repeat(" ", idLength - 2),
+		strings.Repeat(" ", idLength-2),
 		strings.Repeat(" ", nameLength-4),
 		strings.Repeat(" ", descLength-11),
-		strings.Repeat(" ", statusLength - 6),
+		strings.Repeat(" ", statusLength-6),
 		strings.Repeat("+", totalLength))
 
 	var body string
+	// adds empty row and shows not found message
+	if len(todos) == 0 {
+		body = fmt.Sprintf("+%vThere are no todos%v+\n%v\n",
+			strings.Repeat(" ", (totalLength-19)/2),
+			strings.Repeat(" ", (totalLength-19)/2),
+			strings.Repeat("+", totalLength),
+		)
+		fmt.Println(header + body)
+
+		return
+	}
+
+	// create body row by row
 	for _, v := range todos {
 		body = body + fmt.Sprintf("+ %v%v + %v%v + %v%v + %v%v +\n%v\n",
 			v.Id,
-			strings.Repeat(" ", idLength - len(fmt.Sprint(v.Id))),
+			strings.Repeat(" ", idLength-len(fmt.Sprint(v.Id))),
 			v.Name,
 			strings.Repeat(" ", nameLength-len(v.Name)),
 			v.Desc,
 			strings.Repeat(" ", descLength-len(v.Desc)),
 			v.Status,
-			strings.Repeat(" ", statusLength - len(v.Status)),
+			strings.Repeat(" ", statusLength-len(v.Status)),
 			strings.Repeat("+", totalLength))
 	}
 

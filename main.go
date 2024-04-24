@@ -26,22 +26,22 @@ func tablize(todos []Todo) {
 
 	// increase size of column when content is long
 	for _, v := range todos {
-		if len(v.Name) > int(nameLength) {
-			nameLength = len(v.Name)
+		if id := len(fmt.Sprint(v.Id)); id > idLength {
+			idLength = id
 		}
-		if len(v.Desc) > descLength {
-			descLength = len(v.Desc)
+		if name := len(v.Name); name > nameLength {
+			nameLength = name
 		}
-		if len(fmt.Sprint(v.Id)) > idLength {
-			idLength = len(fmt.Sprint(v.Id))
+		if desc := len(v.Desc); desc > descLength {
+			descLength = desc
 		}
-		if len(v.Status) > statusLength {
-			statusLength = len(v.Status)
+		if status := len(v.Status); status > statusLength {
+			statusLength = status
 		}
 	}
 
 	// divider row size
-	totalLength := idLength + nameLength + descLength + statusLength + 13
+	var totalLength = idLength + nameLength + descLength + statusLength + 13
 
 	// creates header
 	var header = fmt.Sprintf("\n%v\n+ \033[1mid\033[0m %v+ \033[1mname\033[0m %v+ \033[1mdescription\033[0m %v+ \033[1mstatus\033[0m %v+\n%v\n",
@@ -89,6 +89,12 @@ func main() {
 
 	list := flag.NewFlagSet("list", flag.ExitOnError)
 	remove := flag.NewFlagSet("remove", flag.ExitOnError)
+
+	update := flag.NewFlagSet("update", flag.ExitOnError)
+	newName := update.String("n", "", "Name of the todo item to update")
+	newDesc := update.String("d", "", "Description of the todo item to update")
+	id := update.Uint("i", 0, "Id of the todo item to update")
+
 	flag.Parse()
 
 	var command string = flag.Arg(0)
@@ -153,5 +159,34 @@ func main() {
 
 		os.WriteFile(path, content, 0777)
 		fmt.Println("Todo was successfully deleted.")
+
+	// update subcommand function
+	case "update":
+		update.Parse(flag.Args()[1:])
+
+		if *id == 0 {
+			fmt.Println("please give valid id to update!")
+			return
+		}
+
+		for i, v := range todos {
+			if v.Id == uint16(*id) {
+				if *newName != "" {
+					todos[i].Name = *newName
+
+				}
+
+				if *newDesc != "" {
+					todos[i].Name = *newDesc
+
+				}
+				break
+			}
+		}
+
+		content, _ := json.Marshal(todos)
+		os.WriteFile(path, content, 0777)
+
+		fmt.Println("Todo was successfully updated.")
 	}
 }

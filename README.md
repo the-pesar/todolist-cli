@@ -1,5 +1,5 @@
 # Todolist-cli
-Golang
+Simple CLI todolist (just for training)
 ## tasks
 - [x] **add**: todolist add -n {name} -d {description}
 - [x] **read**: todolist list {id}

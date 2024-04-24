@@ -11,3 +11,4 @@ $ go build main.go
 - [x] **read**: ./main list {id}
 - [x] **update**: ./main update -i {id} -n {newname} -d {newdesc}
 - [x] **remove**: ./main remove {id}
+- [ ] **status**: ./main status -i {id} -s {newstatus}
